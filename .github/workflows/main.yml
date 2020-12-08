@@ -17,7 +17,6 @@ jobs:
         id: yarn-cache
         with:
           path: |
-            ${{ github.workspace }}/cache
             **/node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
