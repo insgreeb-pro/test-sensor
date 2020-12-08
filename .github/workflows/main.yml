@@ -1,0 +1,34 @@
+name: Schedule Test
+on:
+  schedule:
+    - cron: "0 */1 * * *"
+
+jobs:
+  build:
+    name: Build and Publish
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+      - uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: |
+            ${{ github.workspace }}/cache
+            **/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - run: yarn
+        name: Install Dependencies
+
+      - run: yarn start
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT: ${{ secrets.TELEGRAM_CHAT }}
+          API_SERVER: ${{ secrets.API_SERVER }}
+          CHANNELS: ${{ secrets.CHANNELS }}
